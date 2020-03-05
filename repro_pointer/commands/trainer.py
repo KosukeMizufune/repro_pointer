@@ -129,6 +129,20 @@ class TrainExtension:
         writer.add_figure(tag=f"{self.prefix}/config", figure=fig)
         writer.close()
 
+    def print_metrics(self):
+        """Extension method for printing metrics.
+        For now, this method prints only validation AP@0.5, mAP@0.5, and
+        traning loss.
+        Args:
+            trainer (ignite.Engine): trainer
+            val_evaluator (ignite.Engine): validation evaluator.
+        """
+        @self.trainer.on(Events.EPOCH_COMPLETED)
+        def compute_metrics(engine):
+            val_metrics = self.evaluator.state.metrics
+            print(f"Val accuracy is {val_metrics.get('Accuracy')}")
+            print(f"Train loss is {self.trainer.state.metrics['loss']}")
+
 
 def _log_tensorboard(logger, engine, tag, global_step_transform, metric_names,
                      event_name=Events.EPOCH_COMPLETED):

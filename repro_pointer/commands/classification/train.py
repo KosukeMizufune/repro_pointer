@@ -53,6 +53,7 @@ def main(ctx, config_file, dataset_root, res_root_dir, debug, device,
 
     res_dir = Path(res_root_dir) / config['dataset']['dataset_name']
     train_extend = TrainExtension(trainer, evaluator, res_dir)
+    train_extend.print_metrics()
     train_extend.set_progressbar()
     if not debug:
         train_extend.copy_configs(config_file)
