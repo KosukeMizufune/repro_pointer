@@ -1,0 +1,35 @@
+train_augment:
+  RandomRotate:
+  ToTensor:
+
+val_augment:
+  ToTensor:
+
+dataset:
+  batchsize: 32
+  dataset_name: ModelNet40
+  n_points: 2048
+
+model:
+  name: PointNetClassifier
+
+loss:
+  name: PointNetLoss
+
+optimizer:
+  name: SGD
+  params:
+    lr: 0.001
+    momentum: 0.9
+    weight_decay: 0.0005
+
+task: classification
+
+evaluate:
+  Accuracy:
+
+model_checkpoint:
+  save_interval: 5
+  n_saved: 1
+
+epochs: 10
