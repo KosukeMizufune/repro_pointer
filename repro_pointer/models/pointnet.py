@@ -36,7 +36,7 @@ class STNkd(nn.Module):
         x = F.relu(self.bn5(self.fc2(x)))
         x = self.fc3(x)
 
-        x = x + self.iden
+        x = x + torch.eye(self.k, device=x.device).flatten()
         x = x.view(-1, self.k, self.k)
         return x
 
@@ -108,6 +108,9 @@ class PointNetClassifier(nn.Module):
         x = F.relu(self.bn2(self.dropout(self.fc2(x))))
         x = self.fc3(x)
         return x, trans_feat
+    
+    def predict(self, x):
+        return self.forward(x)[0]
 
 
 def _frobenius_loss(trans):

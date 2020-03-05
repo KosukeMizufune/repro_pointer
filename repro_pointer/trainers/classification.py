@@ -57,8 +57,7 @@ def create_classification_trainer(model, optimizer, loss_fn,
 
 def create_classification_evaluator(model, metrics=None,
                                     device=None, non_blocking=False,
-                                    prepare_batch=_prepare_batch,
-                                    output_transform=lambda x, y, y_pred: (y_pred, y,)):
+                                    prepare_batch=_prepare_batch):
     """
     Factory function for creating an evaluator for supervised models.
     Args:
@@ -88,8 +87,8 @@ def create_classification_evaluator(model, metrics=None,
         with torch.no_grad():
             x, y = prepare_batch(batch, device=device,
                                  non_blocking=non_blocking)
-            y_pred = model(x)
-            return output_transform(x, y, y_pred)
+            y_pred = model.predict(x)
+        return y_pred, y
 
     engine = Engine(_inference)
 
