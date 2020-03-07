@@ -1,5 +1,6 @@
 from datetime import datetime
 import shutil
+from pathlib import Path
 
 from ignite.contrib.handlers import (ProgressBar, global_step_from_engine,
                                      TensorboardLogger)
@@ -62,7 +63,7 @@ class TrainExtension:
         self.res_dir.mkdir(parents=True)
 
     def copy_configs(self, config_file):
-        shutil.copy(config_file, self.res_dir / self.config_file.name)
+        shutil.copy(config_file, self.res_dir / Path(config_file).name)
 
     def set_progressbar(self):
         """Attach ProgressBar.

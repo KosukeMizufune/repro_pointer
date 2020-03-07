@@ -57,7 +57,7 @@ def main(ctx, config_file, dataset_root, res_root_dir, debug, device,
     train_extend.set_progressbar()
     if not debug:
         train_extend.copy_configs(config_file)
-        train_extend.set_tensorboard(metrics)
+        train_extend.set_tensorboard(list(metrics.keys()))
         train_extend.save_model(net, **config['model_checkpoint'])
         train_extend.show_config_on_tensorboard(config)
 
