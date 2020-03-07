@@ -74,7 +74,8 @@ class TrainExtension:
         """
         pbar = ProgressBar(persist=True)
         pbar.attach(self.trainer)
-        pbar.attach(self.evaluator)
+        pbar_val = ProgressBar(persist=True)
+        pbar_val.attach(self.evaluator)
 
     def set_tensorboard(self, metrics):
         """Extension method for logging on tensorboard.
