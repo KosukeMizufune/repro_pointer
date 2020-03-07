@@ -5,7 +5,8 @@ import click
 from ruamel import yaml
 from ignite.engine import Events
 
-from repro_pointer.commands.dataset import get_loaders, get_transforms
+from repro_pointer.commands.dataset import (get_loaders, get_transforms,
+                                            get_labels)
 from repro_pointer.commands.optimizer import get_optimizer
 from repro_pointer.commands.model import get_net, get_loss
 from repro_pointer.commands.trainer import (get_trainer, get_evaluator,
@@ -37,11 +38,8 @@ def main(ctx, config_file, dataset_root, res_root_dir, debug, device,
                                            dataset_root=dataset_root,
                                            num_workers=num_workers,
                                            **config['dataset'])
-
-    n_class = train_loader.dataset.n_class
-    config['model'].update({'params': {'n_class': n_class}})
-
-    net = get_net(**config['model'], logger=logger)
+    label_names = get_labels(train_loader)
+    net = get_net(n_class=len(label_names), **config['model'], logger=logger)
     criterion = get_loss(**config['loss'], logger=logger)
     optimizer = get_optimizer(net, **config['optimizer'])
 

@@ -16,6 +16,8 @@ class ModelNet40(Dataset):
         self.n_points = n_points
         self.transforms = transforms
         self.n_class = 40
+        with open(self.data_root / 'shape_names.txt') as f:
+            self.label_names = [s.strip() for s in f.readlines()]
 
     def _get_data_files(self, list_filename):
         with open(list_filename) as f:

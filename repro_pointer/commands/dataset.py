@@ -42,3 +42,7 @@ def get_loaders(dataset_name, dataset_root="data", train_transforms=None,
                             num_workers=num_workers,
                             shuffle=False)
     return train_loader, val_loader
+
+
+def get_labels(loader):
+    return loader.dataset.label_names
