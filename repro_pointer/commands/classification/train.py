@@ -11,6 +11,7 @@ from repro_pointer.commands.model import get_net, get_loss
 from repro_pointer.commands.trainer import (get_trainer, get_evaluator,
                                             get_metrics, TrainExtension)
 
+TASK = 'classification'
 
 logger = getLogger(__name__)
 
@@ -43,9 +44,10 @@ def main(ctx, config_file, dataset_root, res_root_dir, debug, device,
     net = get_net(**config['model'], logger=logger)
     criterion = get_loss(**config['loss'], logger=logger)
     optimizer = get_optimizer(net, **config['optimizer'])
-    trainer = get_trainer(net, optimizer, criterion, device, config['task'])
+
+    trainer = get_trainer(net, optimizer, criterion, device, TASK)
     metrics = get_metrics(config['evaluate'])
-    evaluator = get_evaluator(net, metrics, device, config['task'])
+    evaluator = get_evaluator(net, metrics, device, TASK)
 
     @trainer.on(Events.EPOCH_COMPLETED)
     def compute_metrics(engine):
