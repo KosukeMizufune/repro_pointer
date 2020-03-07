@@ -23,8 +23,6 @@ optimizer:
     momentum: 0.9
     weight_decay: 0.0005
 
-task: classification
-
 evaluate:
   Accuracy:
 
@@ -32,4 +30,4 @@ model_checkpoint:
   save_interval: 5
   n_saved: 1
 
-epochs: 10
+epochs: 75
