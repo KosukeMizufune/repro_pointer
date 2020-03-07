@@ -115,7 +115,7 @@ class TrainExtension:
                                        {'epoch': model})
 
     def show_config_on_tensorboard(self, config):
-        config_table = pd.io.json.json_normalize(config).T
+        config_table = pd.json_normalize(config).T
         config_table.index = config_table.index.str.split('.', expand=True)
         config_table = config_table.reset_index().fillna('')
 

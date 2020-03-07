@@ -23,7 +23,7 @@ class ModelNet40(Dataset):
 
     def _load_data_file(self, filename):
         name = self.root / filename
-        f = h5py.File(name)
+        f = h5py.File(name, mode='r')
         data = f["data"][:]
         label = f["label"][:]
         return data, label
