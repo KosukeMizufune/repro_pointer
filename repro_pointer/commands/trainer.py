@@ -3,11 +3,13 @@ import shutil
 from pathlib import Path
 
 from ignite.contrib.handlers import (ProgressBar, global_step_from_engine,
-                                     TensorboardLogger)
+                                     TensorboardLogger, LRScheduler,
+                                     create_lr_scheduler_with_warmup)
 from ignite.contrib.handlers.tensorboard_logger import OutputHandler
 from ignite.handlers import ModelCheckpoint
 from ignite.engine import Events
 import torch
+from torch.optim import lr_scheduler
 from tensorboardX import SummaryWriter
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -43,13 +45,6 @@ class TrainExtension:
     Learning Rate Scheduler, etc.) to this class. If you add, then you must
     add such method in also train.py.
     Args:
-        step_func (callable): step function for TensorBoard and mlfLow.
-        metrics (dict): metrics to be monitored.
-        config_file: config file path. this argument will be used in
-            ``copy_configs`` and ``set_mlflow``.
-        data ({'voc', 'cancer', 'periodontal'}): data name.
-        task ({'voc', 'cancer', 'periodontal', 'periodontal_gum',
-            'periodontal_vs_others}): task name.
         res_root_dir (str): result root directory. outputs will be saved in
             ``{res_root_dir}/{task}/{timestamp}/`` directory.
     """
@@ -133,7 +128,7 @@ class TrainExtension:
         writer.add_figure(tag=f"{self.prefix}/config", figure=fig)
         writer.close()
 
-    def print_metrics(self):
+    def print_metrics(self, metrics):
         """Extension method for printing metrics.
         For now, this method prints only validation AP@0.5, mAP@0.5, and
         traning loss.
@@ -144,8 +139,28 @@ class TrainExtension:
         @self.trainer.on(Events.EPOCH_COMPLETED)
         def compute_metrics(engine):
             val_metrics = self.evaluator.state.metrics
-            print(f"Val accuracy is {val_metrics.get('Accuracy')}")
             print(f"Train loss is {self.trainer.state.metrics['loss']}")
+            for metric in metrics:
+                print(f"Val {metric} is {val_metrics.get(metric)}")
+
+    def schedule_lr(self, optimizer, name, params, warmup_start=None,
+                    warmup_end=None, warmup_duration=None):
+        if name is None:
+            return None
+        lr_scheduler = self._get_lr_scheduler(name)(optimizer, **params)
+        if warmup_start and warmup_end and warmup_duration:
+            scheduler = \
+                create_lr_scheduler_with_warmup(lr_scheduler,
+                                                warmup_start_value=warmup_start,
+                                                warmup_end_value=warmup_end,
+                                                warmup_duration=warmup_duration)
+        else:
+            scheduler = LRScheduler(lr_scheduler)
+        self.trainer.add_event_handler(Events.EPOCH_COMPLETED, scheduler)
+
+    @staticmethod
+    def _get_lr_scheduler(name):
+        return getattr(lr_scheduler, name)
 
 
 def _log_tensorboard(logger, engine, tag, global_step_transform, metric_names,

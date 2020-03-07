@@ -57,6 +57,7 @@ def main(ctx, config_file, dataset_root, res_root_dir, debug, device,
     train_extend = TrainExtension(trainer, evaluator, res_dir)
     train_extend.print_metrics()
     train_extend.set_progressbar()
+    train_extend.schedule_lr(optimizer, **config['lr_schedule'])
     if not debug:
         train_extend.copy_configs(config_file)
         train_extend.set_tensorboard(list(metrics.keys()))
