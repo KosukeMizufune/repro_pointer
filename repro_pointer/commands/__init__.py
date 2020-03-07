@@ -1,6 +1,6 @@
 import click
 
-from repro_pointer.commands import classification, point_cloud
+from repro_pointer.commands import classification, download
 
 
 __version__ = '0.1.0'
@@ -15,4 +15,4 @@ def main(ctx, **kwargs):
 
 
 main.add_command(classification.main, 'classification')
-main.add_command(point_cloud.main, 'point_cloud')
+main.add_command(download.main, 'download')
