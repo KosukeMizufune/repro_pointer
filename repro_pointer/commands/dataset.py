@@ -1,12 +1,7 @@
-from pathlib import Path
-
 from torch.utils.data import DataLoader
 
 from repro_pointer import datasets
 from repro_pointer.transforms import transforms, Compose
-
-ROOT_DIR = Path(__file__).parents[2]
-DATA_DIR = ROOT_DIR / 'data/'
 
 
 def get_dataset(dataset_name, dataset_root="data", train=True, transforms=None,
