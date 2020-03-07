@@ -83,7 +83,9 @@ class TrainExtension:
             val_evaluator (ignite.Engine): validation evaluator.
             val_evaluator (ignite.Engine): test evaluator.
         """
-        logger = TensorboardLogger(log_dir=self.res_dir / 'tensorboard')
+        logger = TensorboardLogger(
+            log_dir=self.res_dir / 'tensorboard' / 'train'
+        )
         _log_tensorboard(logger, self.trainer, f"{self.prefix}/train",
                          self.step_func, ["loss"])
         _log_tensorboard(logger, self.evaluator, f"{self.prefix}/val",
