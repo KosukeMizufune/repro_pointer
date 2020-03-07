@@ -108,7 +108,7 @@ class PointNetClassifier(nn.Module):
         x = F.relu(self.bn2(self.dropout(self.fc2(x))))
         x = self.fc3(x)
         return x, trans_feat
-    
+
     def predict(self, x):
         return self.forward(x)[0]
 
