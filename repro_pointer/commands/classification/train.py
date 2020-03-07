@@ -47,6 +47,7 @@ def main(ctx, config_file, dataset_root, res_root_dir, debug, device,
 
     trainer = get_trainer(net, optimizer, criterion, device, TASK)
     metrics = get_metrics(config['evaluate'])
+    metric_names = list(metrics.keys())
     evaluator = get_evaluator(net, metrics, device, TASK)
 
     @trainer.on(Events.EPOCH_COMPLETED)
@@ -55,12 +56,12 @@ def main(ctx, config_file, dataset_root, res_root_dir, debug, device,
 
     res_dir = Path(res_root_dir) / config['dataset']['dataset_name']
     train_extend = TrainExtension(trainer, evaluator, res_dir)
-    train_extend.print_metrics()
+    train_extend.print_metrics(metric_names)
     train_extend.set_progressbar()
     train_extend.schedule_lr(optimizer, **config['lr_schedule'])
     if not debug:
         train_extend.copy_configs(config_file)
-        train_extend.set_tensorboard(list(metrics.keys()))
+        train_extend.set_tensorboard(metric_names)
         train_extend.save_model(net, **config['model_checkpoint'])
         train_extend.show_config_on_tensorboard(config)
 
